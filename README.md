@@ -16,8 +16,9 @@ If the data transmission is the return value of a request, then this should be `
 ### `requestID`
 This is a unique ID representing a request so it can be identified.
 
-The `requestID` should be a unique, random string created at the time of the request's creation.
+The `requestID` should be a unique, random string (not including any commas) created at the time of the request's creation.
 Keep it to a reasonable size.
+
 
 ### `type`
 The `type` is the "type" of the "function" to be executed, as in what type of value should be returned. Here is a table describing what it can be (more types will be coming soon):
@@ -38,7 +39,7 @@ The `type` is the "type" of the "function" to be executed, as in what type of va
 </table>
 
 ### `name`
-The `name` is essentially the name of the "function" being called.
+The `name` is essentially the name of the "function" being called. Names are choosen when creating a protocol for an application and must not contain commas.
 
 ### `data`
 Used for parameters (if a request) or return value (if a return). This field can be anything, but JSON is recommended.

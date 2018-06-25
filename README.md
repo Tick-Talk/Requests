@@ -29,18 +29,18 @@ The `type` is the "type" of the "function" to be executed, as in what type of va
 		</tr>
   <tr>
 			<td><code>string</code></td>
-			<td>There should be a response and it should have `data` of type `string`</td>
+			<td>A request that requires a string response. The data generated from this request should reside in the `data` section when the `return` is called</td>
 		</tr>
   <tr>
 			<td><code>error</code></td>
-			<td>An error was encountered and it will be in `string` form in `data`</td>
+			<td>This type signifies that an error was encountered (like an exception occurred) and the error details will be a string in `data`</td>
 		</tr>
 </table>
 
 ### `name`
-Name of the function returning/executing
-### `data`
-Used for parameters (if a request) or return value (if a return)
+The `name` is essentially the name of the "function" being called.
 
-## Notes
-data can have commas in it, so watch out when making ur own bindings!
+### `data`
+Used for parameters (if a request) or return value (if a return). This field can be anything, but JSON is recommended.
+
+`data` can have commas in it, so watch out if you are making your own binding (don't just do a `.split(',')`)!

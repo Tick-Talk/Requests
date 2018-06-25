@@ -7,7 +7,7 @@ A java bind of Requests will soon be available with documentation on how to use 
 
 # Format of all data transmission in Requests
 
-# `(request/return),requestID,type,name,data`
+## `(request/return),requestID,type,name,data`
 
 ### `(request/return)`
 If the data transmission is a request, then this should be `request`.

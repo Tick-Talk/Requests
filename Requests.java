@@ -1,5 +1,3 @@
-package cc.ticktalk.ticktalk.Model;
-
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 

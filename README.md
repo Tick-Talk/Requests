@@ -3,7 +3,7 @@ An object oriented request based networking protocol suitable for almost all net
 
 The goal of Requests is to mimick standard function/method calls in an average programming language. Through this goal, Requests is very easy to integrate with your code.
 
-A java bind of Requests will soon be available with documentation on how to use it. Below is the Requests standard.
+A java bind of Requests is available -- see Requests.java. Below is the Requests standard.
 
 # Format of all data transmission in Requests
 

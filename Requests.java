@@ -8,28 +8,28 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Requests {
     /**
-     * A class used for callbacks for when an `error` or `return` is received
+     * An interface used for callbacks for when an `error` or `return` is received
      */
-    static abstract class OnResultCallback {
+    public interface OnResultCallback {
         /**
          * When a `return` is received, called from inside parseData()
          *
          * @param data the data received in the `return`
          */
-        abstract void onReturn(String data);
+        void onReturn(String data);
 
         /**
          * When an `error` is received, called from inside parseData()
          *
          * @param error the error received in the `error`
          */
-        abstract void onError(String error);
+        void onError(String error);
     }
 
     /**
-     * A class containing callbacks for when a request is received
+     * An interface containing callbacks for when a request is received
      */
-    static abstract class OnRequestCallback {
+    public interface OnRequestCallback {
         /**
          * Called (from inside parseData()) when a request is received
          *
@@ -37,7 +37,7 @@ public class Requests {
          * @param name      The name of the request (the "function" name)
          * @param data      The data/parameters associated with the request
          */
-        abstract void onRequest(String requestID, String name, String data);
+        void onRequest(String requestID, String name, String data);
     }
 
     /**

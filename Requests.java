@@ -10,7 +10,7 @@ public class Requests {
     /**
      * A class used for callbacks for when an `error` or `return` is received
      */
-    abstract class OnResultCallback {
+    static abstract class OnResultCallback {
         /**
          * When a `return` is received, called from inside parseData()
          *
@@ -29,7 +29,7 @@ public class Requests {
     /**
      * A class containing callbacks for when a request is received
      */
-    abstract class OnRequestCallback {
+    static abstract class OnRequestCallback {
         /**
          * Called (from inside parseData()) when a request is received
          *

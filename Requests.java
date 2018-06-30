@@ -14,16 +14,18 @@ public class Requests {
         /**
          * When a `return` is received, called from inside parseData()
          *
+         * @param name the name of the request (the "function" name)
          * @param data the data received in the `return`
          */
-        void onReturn(String data);
+        void onReturn(String name, String data);
 
         /**
          * When an `error` is received, called from inside parseData()
          *
+         * @param name  the name of the request (the "function" name)
          * @param error the error received in the `error`
          */
-        void onError(String error);
+        void onError(String name, String error);
     }
 
     /**
@@ -67,7 +69,7 @@ public class Requests {
      * Called from within parseData()
      * This may be called when a request is returned but null was passed to generateRequest()
      */
-    private OnResultCallback onDataWithUnknownRequestID;
+    private OnResultCallback onUnknownRequestID;
 
     /**
      * The constructor for Requests that initializes the necessary fields
@@ -80,7 +82,22 @@ public class Requests {
     public Requests(OnRequestCallback onRequestCallback,
                     OnResultCallback onDataWithUnknownRequestID) {
         this.onRequestCallback = onRequestCallback;
-        this.onDataWithUnknownRequestID = onDataWithUnknownRequestID;
+        this.onUnknownRequestID = onDataWithUnknownRequestID;
+    }
+
+    /**
+     * A simple and efficient method to find the nth index of a comma in a string
+     *
+     * @param str the string to search
+     * @param n   the nth occurrence of a comma to return the index of (starting at 1)
+     * @return the index of the nth occurrence of a comma in the string
+     */
+    private int findNthComma(String str, int n) {
+        int counter = 0;
+        for (int i = 0; i < str.length(); ++i) {
+            if (str.charAt(i) == ',' && ++counter == n) return i;
+        }
+        return -1;
     }
 
     /**
@@ -136,57 +153,30 @@ public class Requests {
      * @return true if the data received was valid (follows Requests protocol), false otherwise
      */
     public boolean parseData(String rawData) {
-        StringBuilder type = new StringBuilder(), requestID = new StringBuilder(),
-                name = new StringBuilder(), data = new StringBuilder();
-        for (int i = 0, commasEncountered = 0; i < rawData.length(); ++i) {
-            char c = rawData.charAt(i);
-            if (c == ',' && commasEncountered < 3) {
-                commasEncountered++;
-            } else {
-                switch (commasEncountered) {
-                    case 0: // type
-                        type.append(c);
-                        break;
-                    case 1: // requestID
-                        requestID.append(c);
-                        break;
-                    case 2: // name
-                        name.append(c);
-                        break;
-                    case 3: // data
-                        data.append(c);
-                        break;
-                }
-            }
+        int index1 = findNthComma(rawData, 1),
+                index2 = findNthComma(rawData, 2),
+                index3 = findNthComma(rawData, 3);
+        String type, requestID, name, data;
+        try {
+            type = rawData.substring(0, index1);
+            requestID = rawData.substring(index1 + 1, index2);
+            name = rawData.substring(index2 + 1, index3);
+            data = rawData.substring(index3 + 1);
+        } catch (StringIndexOutOfBoundsException e) {
+            return false;
         }
-        switch (type.toString()) {
+        switch (type) {
             case "request":
-                if (onRequestCallback != null) {
-                    onRequestCallback.onRequest(requestID.toString(),
-                            name.toString(), data.toString());
-                }
-                return true;
+                if (onRequestCallback != null) onRequestCallback.onRequest(requestID, name, data);
             case "return":
-                OnResultCallback returnCallback = createdRequests.remove(requestID.toString());
-                if (returnCallback != null) {
-                    returnCallback.onReturn(data.toString());
-                } else {
-                    if (onDataWithUnknownRequestID != null) {
-                        onDataWithUnknownRequestID.onReturn(data.toString());
-                    }
-                }
-                return true;
+                OnResultCallback returnCallback = createdRequests.remove(requestID);
+                if (returnCallback != null) returnCallback.onReturn(name, data);
+                else if (onUnknownRequestID != null) onUnknownRequestID.onReturn(name, data);
             case "error":
-                OnResultCallback errorCallback = createdRequests.remove(requestID.toString());
-                if (errorCallback != null) {
-                    errorCallback.onError(data.toString());
-                } else {
-                    if (onDataWithUnknownRequestID != null) {
-                        onDataWithUnknownRequestID.onError(data.toString());
-                    }
-                }
-                return true;
+                OnResultCallback errorCallback = createdRequests.remove(requestID);
+                if (errorCallback != null) errorCallback.onError(name, data);
+                else if (onUnknownRequestID != null) onUnknownRequestID.onError(name, data);
         }
-        return false;
+        return true;
     }
 }
